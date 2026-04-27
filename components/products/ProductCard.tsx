@@ -1,10 +1,7 @@
 import { Product } from "@/src/schemas";
 import { formatCurrency } from "@/src/utils";
-import Image from "next/image";
 
-export default function ProductCard({ product }: { product: Product }) {
-  console.log("Ruta creada : "+`/${process.env.API_URL}/img/${product.image}`);
-  
+export default function ProductCard({ product }: { product: Product }) {  
   return (
     <div
       className='rounded bg-white shadow relative p-5'

@@ -19,6 +19,8 @@ export const CategorySchema = z.object({
     deletedAt: z.coerce.date().nullable(),
 });
 
+export const CategoriesResponseSchema = z.array(CategorySchema);
+
 export const CategoryWithProductsSchema = CategorySchema.extend({
     products: z.array(ProductSchema)
 });
