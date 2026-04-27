@@ -6,6 +6,7 @@ export const ProductSchema = z.object({
     image: z.string(),
     price: z.coerce.number(),
     inventory: z.number(),
+    categoryId: z.number(),
     createdAt: z.coerce.date(),
     updatedAt: z.coerce.date(),
     deletedAt: z.coerce.date().nullable(),
@@ -25,4 +26,20 @@ export const CategoryWithProductsSchema = CategorySchema.extend({
     products: z.array(ProductSchema)
 });
 
-export type Product = z.infer<typeof ProductSchema>
+/** Shopping Cart */
+const ShoppingCartContentsSchema = ProductSchema.pick({
+    name: true,
+    image: true,
+    price: true,
+    inventory: true,
+    createdAt: true,
+    updatedAt: true,
+}).extend({
+    productId: z.number(),
+    quantity: z.number()
+});
+
+export const ShoppingCartSchema = z.array(ShoppingCartContentsSchema)
+
+export type Product = z.infer<typeof ProductSchema>;
+export type ShoppingCart = z.infer<typeof ShoppingCartSchema>
