@@ -1,5 +1,7 @@
 "use client";
 
+import { getSalesByDate } from "@/src/api";
+import { useQuery } from "@tanstack/react-query";
 import { format } from "date-fns";
 import { useState } from "react";
 import Calendar from "react-calendar";
@@ -12,7 +14,11 @@ export default function TransactionFilter() {
     const [date, setDate] = useState<Value>(new Date());
 
     const formattedDate = format(date?.toString()!, 'yyy-MM-dd');
-    console.log(formattedDate);
+    const {data, isLoading} = useQuery({
+        queryKey: ['sales', formattedDate],
+        queryFn: () => getSalesByDate(formattedDate)
+    });
+    console.log(data);
     
     return (
         <div
