@@ -20,7 +20,7 @@ export default async function MainNav() {
 
             <nav className="flex flex-col md:flex-row gap-2 items-center mt-5 md:mt-0">
                 {categories.map(category => (
-                    <Link 
+                    <Link
                         key={category.id}
                         href={`/${category.id}`}
                         className="text-white hover:text-green-400 font-bold p-2"
@@ -28,6 +28,12 @@ export default async function MainNav() {
                         {category.name}
                     </Link>
                 ))}
+                <Link
+                    href="/admin/sales"
+                    className="rounded bg-green-400 font-bold py-2 px-10"
+                >
+                    Panel de Administración
+                </Link>
             </nav>
         </header>
     )
