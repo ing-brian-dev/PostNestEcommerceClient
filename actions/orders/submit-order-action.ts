@@ -4,8 +4,8 @@ import { ErrorResponseSchema, OrderSchema, SuccessResponseSchema } from "@/src/s
 import { revalidatePath, revalidateTag } from "next/cache";
 
 export async function submitOrder(data: unknown) {
-    const order = OrderSchema.parse(data)
-
+    
+    const order = OrderSchema.parse(data);
     const url = `${process.env.API_URL}/transactions`;
     const req = await fetch(url, {
         method: 'POST',

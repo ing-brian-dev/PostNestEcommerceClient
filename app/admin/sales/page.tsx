@@ -9,7 +9,7 @@ export default async function SalesPage() {
   const queryClient = new QueryClient();
 
   const today = new Date();
-  const formattedDate = format(today, 'yyy-MM-dd');
+  const formattedDate = format(today, 'yyyy-MM-dd');
 
   await queryClient.prefetchQuery({
     queryKey: ['sales', formattedDate],
