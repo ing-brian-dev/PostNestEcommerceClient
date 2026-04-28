@@ -3,12 +3,13 @@ import { formatCurrency } from "@/src/utils";
 type AmountProps = {
     label: string;
     amount: number;
+    discount?: boolean;
 }
 
-export default function Amount({ label, amount }: AmountProps) {
+export default function Amount({ label, amount, discount }: AmountProps) {
     return (
         <div
-            className="flex justify-between"
+            className={`${discount && 'bg-green-400 text-green-900'} flex justify-between p-1`}
         >
             <dt>
                 {label}
@@ -16,7 +17,7 @@ export default function Amount({ label, amount }: AmountProps) {
             <dd
                 className="text-shadow-gray-900"
             >
-                {formatCurrency(amount)}
+                {discount && '- '}{formatCurrency(amount)}
             </dd>
         </div>
     )
