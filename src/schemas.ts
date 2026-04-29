@@ -45,6 +45,10 @@ export const CouponResponseSchema = z.object({
     name: z.string().default(''),
     message: z.string(),
     percentage: z.coerce.number().min(0).max(100).default(0),
+    expirationDate: z.coerce.date(),
+    createdAt: z.coerce.date(),
+    updatedAt: z.coerce.date(),
+    deletedAt: z.coerce.date().nullable(),
 });
 
 const OrderContentSchema = z.object({
@@ -55,21 +59,46 @@ const OrderContentSchema = z.object({
 
 export const OrderSchema = z.object({
     total: z.number(),
-    coupon: z.string(),
+    coupon_name: z.string().optional(),
     contents: z.array(OrderContentSchema).min(1, { message: 'El Carrito no puede ir vacio' })
 });
 
 /** Success / Error Response */
 export const SuccessResponseSchema = z.object({
     message: z.string()
-})
+});
+
 export const ErrorResponseSchema = z.object({
     message: z.array(z.string()),
     error: z.string(),
     statusCode: z.number()
-})
+});
+
+export const ContentsSchema = z.object({
+    id: z.number(),
+    quantity: z.number(),
+    price: z.string(),
+    product: ProductSchema,
+    createdAt: z.coerce.date(),
+    updatedAt: z.coerce.date(),
+    deletedAt: z.coerce.date().nullable(),
+});
+
+export const TransactionResponseSchema = z.object({
+    id: z.number(),
+    total: z.coerce.number(),
+    discount: z.coerce.number().nullable(),
+    coupon_name: z.string().nullable(),
+    contents: z.array(ContentsSchema),
+    createdAt: z.coerce.date(),
+    updatedAt: z.coerce.date(),
+    deletedAt: z.coerce.date().nullable(),
+});
+
+export const TransactionsResponseSchema = z.array(TransactionResponseSchema);
 
 export type Product = z.infer<typeof ProductSchema>;
 export type ShoppingCart = z.infer<typeof ShoppingCartSchema>;
 export type CartItem = z.infer<typeof ShoppingCartContentsSchema>;
-export type Coupon = z.infer<typeof CouponResponseSchema>
+export type Coupon = z.infer<typeof CouponResponseSchema>;
+export type Transaction = z.infer<typeof TransactionResponseSchema>;

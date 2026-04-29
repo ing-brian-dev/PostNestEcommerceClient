@@ -23,7 +23,11 @@ const initialState = {
     coupon: {
         percentage: 0,
         name: '',
-        message: ''
+        message: '',
+        expirationDate: new Date(),
+        createdAt: new Date(),
+        updatedAt: new Date(),
+        deletedAt: null
     },
 }
 
@@ -67,7 +71,7 @@ export const useStore = create<Store>()(devtools((set, get) => ({
             contents: state.contents.filter(item => item.productId !== id)
         }));
 
-        if(!get().contents.length) return get().clearOrder();
+        if (!get().contents.length) return get().clearOrder();
         get().calculateTotal();
     },
     calculateTotal: () => {
