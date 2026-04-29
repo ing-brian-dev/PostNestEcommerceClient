@@ -1,6 +1,7 @@
 import { Product } from "@/src/schemas"
 import { formatCurrency } from "@/src/utils"
 import Link from "next/link"
+import DeleteProductForm from "./DeleteProductForm"
 
 export default function ProductsTable({ products }: { products: Product[] }) {
 
@@ -67,16 +68,9 @@ export default function ProductsTable({ products }: { products: Product[] }) {
                                                         {product.name}
                                                     </span>
                                                 </Link>
-                                                <form 
-                                                    action=""
-                                                
-                                                >
-                                                    <input 
-                                                        type="text" 
-                                                        className="text-red-600 hover:text-red-800 cursor-pointer"
-                                                        defaultValue={'Eliminar'}
-                                                    />
-                                                </form>
+                                                <DeleteProductForm 
+                                                    productId={product.id}
+                                                />
                                             </div>
                                         </td>
                                     </tr>
