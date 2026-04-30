@@ -12,6 +12,11 @@ export const ProductSchema = z.object({
     deletedAt: z.coerce.date().nullable(),
 });
 
+export const ProductResponseSchema = z.object({
+    products: z.array(ProductSchema),
+    total: z.number()
+})
+
 export const CategorySchema = z.object({
     id: z.number(),
     name: z.string(),
@@ -60,19 +65,19 @@ const OrderContentSchema = z.object({
 export const OrderSchema = z.object({
     total: z.number(),
     coupon_name: z.string().optional(),
-    contents: z.array(OrderContentSchema).min(1, { message: 'El Carrito no puede ir vacio' })
+    contents: z.array(OrderContentSchema).min(1, { error: 'El Carrito no puede ir vacio' })
 });
 
 /** Success / Error Response */
 export const SuccessResponseSchema = z.object({
     message: z.string()
-});
+})
 
 export const ErrorResponseSchema = z.object({
     message: z.array(z.string()),
     error: z.string(),
     statusCode: z.number()
-});
+})
 
 export const ContentsSchema = z.object({
     id: z.number(),
@@ -96,6 +101,16 @@ export const TransactionResponseSchema = z.object({
 });
 
 export const TransactionsResponseSchema = z.array(TransactionResponseSchema);
+
+export const ProductFormSchema = z.object({
+    name: z.string()
+        .min(1, { error: 'El nombre es requerido.' }),
+    price: z.coerce.number({ error: 'Precio no válido.' })
+        .min(1, { error: 'El Precio debe ser mayor a 0.' }),
+    inventory: z.coerce.number({ error: 'Inventario no válido.' })
+        .min(1, { error: 'El inventario debe ser mayor a 0.' }),
+    categoryId: z.coerce.number({ error: 'La Categoria no es válida.' })
+})
 
 export type Product = z.infer<typeof ProductSchema>;
 export type ShoppingCart = z.infer<typeof ShoppingCartSchema>;
