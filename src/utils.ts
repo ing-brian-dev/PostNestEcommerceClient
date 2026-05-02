@@ -26,3 +26,5 @@ export function getImagePath(imageUrl: string) {
         return `${process.env.API_URL}/img/${imageUrl}`;
     }
 }
+
+export const isAvailable = (inventory: number) => inventory > 0;
