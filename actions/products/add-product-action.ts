@@ -1,6 +1,7 @@
 "use server"
 
 import { ErrorResponseSchema, Product, ProductFormSchema, SuccessResponseSchema } from "@/src/schemas";
+import { revalidatePath } from "next/cache";
 
 type ActionStateType = {
     errors: string[];
@@ -13,6 +14,7 @@ export async function addProduct(prevState: ActionStateType, formData: FormData)
         name: formData.get('name'),
         price: formData.get('price'),
         image: formData.get('image') ?? '',
+        image_public_id: formData.get('image_public_id') ?? '',
         inventory: formData.get('inventory'),
         categoryId: formData.get('categoryId'),
     });
@@ -42,7 +44,7 @@ export async function addProduct(prevState: ActionStateType, formData: FormData)
             success: '',
         }
     }
-
+    revalidatePath('/admin/products');
     return {
         errors: [],
         success: 'Producto Agregado Correctamente.',

@@ -1,78 +1,119 @@
-"use client"
+"use client";
 
 import { deleteImage } from "@/actions/products/delete-image-action";
 import { uploadImage } from "@/actions/products/upload-image-action";
 import Image from "next/image";
-import { useCallback, useState } from "react"
-import { useDropzone, FileRejection } from "react-dropzone"
+import { useCallback, useState } from "react";
+import { useDropzone, FileRejection } from "react-dropzone";
 
-export default function UploadProduct() {
-
+export default function UploadProduct({
+    currentImage,
+    currentImagePublicId,
+}: {
+    currentImage?: string;
+    currentImagePublicId?: string;
+}) {
     const [error, setError] = useState<string | null>(null);
-    const [image, setImage] = useState({ secure_url: '', public_id: '' });
-    const onDrop = useCallback(async (files: File[], rejectedFile: FileRejection[]) => {
-        setError(null)
+    const [image, setImage] = useState({ secure_url: "", public_id: "" });
+    const [removed, setRemoved] = useState(false);
+    const [loading, setLoading] = useState(false);
 
-        if (rejectedFile.length > 0) {
-            const firstError = rejectedFile[0].errors[0]
+    const previewImage = removed
+        ? image.secure_url || null
+        : image.secure_url || currentImage || null;
 
-            if (firstError.code === "file-too-large") {
-                setError("El archivo es demasiado grande (máx 2MB)")
-            } else if (firstError.code === "file-invalid-type") {
-                setError("Formato no permitido (solo JPG/PNG)")
-            } else if (firstError.code === "too-many-files") {
-                setError("Solo se permite 1 solo archivo.")
-            } else {
-                setError("Archivo inválido")
+    const previewPublicId =
+        image.public_id || currentImagePublicId || null;
+    console.log(previewPublicId);
+
+    const onDrop = useCallback(
+        async (files: File[], rejectedFile: FileRejection[]) => {
+            setError(null);
+
+            if (rejectedFile.length > 0) {
+                const firstError = rejectedFile[0].errors[0];
+
+                if (firstError.code === "file-too-large") {
+                    setError("El archivo es demasiado grande (máx 2MB)");
+                } else if (firstError.code === "file-invalid-type") {
+                    setError("Formato no permitido (solo JPG/PNG)");
+                } else if (firstError.code === "too-many-files") {
+                    setError("Solo se permite 1 archivo.");
+                } else {
+                    setError("Archivo inválido");
+                }
+                return;
             }
-            return
-        }
 
-        const formData = new FormData();
-        files.forEach(file => formData.append('file', file));
-        const image = await uploadImage(formData);
-        setImage(image);
-    }, [])
+            try {
+                setLoading(true);
 
-    const { getRootProps, getInputProps, isDragActive, isDragAccept, isDragReject } = useDropzone({
+                const formData = new FormData();
+                files.forEach((file) => formData.append("file", file));
+
+                const res = await uploadImage(formData);
+
+                setImage(res);
+                setRemoved(false);
+            } catch {
+                setError("Error al subir la imagen");
+            } finally {
+                setLoading(false);
+            }
+        },
+        []
+    );
+
+    const { getRootProps, getInputProps, isDragActive } = useDropzone({
         onDrop,
         accept: {
             "image/jpeg": [".jpg", ".jpeg"],
-            "image/png": [".png"]
+            "image/png": [".png"],
         },
         maxFiles: 1,
-        maxSize: 1024 * 1024 * 2 // 2MB
-    })
+        maxSize: 1024 * 1024 * 2,
+    });
 
-    const handleRemoveImage = async (publicId: string) => {
-        await deleteImage(publicId);
-        setImage({ secure_url: '', public_id: '' });
-    }
+    const handleRemoveImage = async () => {
+        if (!previewPublicId) return;
+
+        try {
+            setLoading(true);
+
+            await deleteImage(previewPublicId);
+
+            setImage({ secure_url: "", public_id: "" });
+            setRemoved(true);
+        } catch {
+            setError("Error al eliminar la imagen");
+        } finally {
+            setLoading(false);
+        }
+    };
 
     return (
         <div className="space-y-4">
-            {!image.secure_url && (
+            {/* DROPZONE */}
+            {!previewImage && (
                 <>
-
                     <label className="block text-sm font-medium text-gray-900">
                         Imagen Producto
                     </label>
 
-                    {/* DROPZONE */}
                     <div
                         {...getRootProps({
                             className: `
-                    py-16 px-4 border-2 border-dashed rounded-lg text-center transition
-                    ${isDragActive ? "border-blue-500 bg-blue-50" : ""}
-                    ${isDragAccept ? "border-green-500 bg-green-50" : ""}
-                    ${isDragReject ? "border-red-500 bg-red-50" : "cursor-pointer"}
-                    ${!isDragActive ? "border-gray-300 bg-white" : ""}
-                `
+                py-16 px-4 border-2 border-dashed rounded-lg text-center transition
+                ${isDragActive ? "border-blue-500 bg-blue-50" : ""}
+                ${!isDragActive ? "border-gray-300 bg-white cursor-pointer" : ""}
+              `,
                         })}
                     >
                         <input {...getInputProps()} />
 
-                        {isDragActive ? (
+                        {loading ? (
+                            <p className="text-sm text-gray-500">Subiendo...</p>
+                        ) : isDragActive ? (
                             <p className="text-sm">Suelta la imagen aquí...</p>
                         ) : (
                             <p className="text-sm text-gray-500">
@@ -84,38 +125,37 @@ export default function UploadProduct() {
             )}
 
             {/* ERROR */}
-            {
-                error && (
-                    <p className="text-red-500 text-sm">{error}</p>
-                )
-            }
+            {error && <p className="text-red-500 text-sm">{error}</p>}
 
             {/* PREVIEW */}
-            {
-                image.secure_url && (
-                    <div className="space-y-2">
-                        <p className="text-sm text-gray-600">Vista previa:</p>
+            {previewImage && (
+                <div className="space-y-2">
+                    <p className="text-sm text-gray-600">Vista previa:</p>
 
-                        <Image
-                            src={image.secure_url}
-                            alt={`Preview ${image.secure_url}`}
-                            className=" object-cover rounded-md border"
-                            width={300}
-                            height={420}
-                        />
+                    <Image
+                        src={previewImage}
+                        alt="Preview"
+                        className="object-cover rounded-md border"
+                        width={300}
+                        height={420}
+                        loading="eager"
+                    />
 
-                        <button
-                            type="button"
-                            onClick={() => handleRemoveImage(image.public_id)}
-                            className="text-xs text-red-500 hover:underline cursor-pointer"
-                        >
-                            Eliminar imagen
-                        </button>
-                        <input type="hidden" name="image" value={image.secure_url} />
-                    </div>
+                    <button
+                        type="button"
+                        onClick={handleRemoveImage}
+                        disabled={loading}
+                        className="text-xs text-red-500 hover:underline cursor-pointer disabled:opacity-50"
+                    >
+                        {loading ? "Eliminando..." : "Eliminar imagen"}
+                    </button>
 
-                )
-            }
-        </div >
-    )
+                    {/* hidden inputs */}
+                    <input type="hidden" name="image" value={previewImage} />
+                    <input type="hidden" name="image_public_id" value={previewPublicId ?? ""}
+                    />
+                </div>
+            )}
+        </div>
+    );
 }

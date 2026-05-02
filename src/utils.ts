@@ -17,3 +17,12 @@ export function isValidPage(value: number): boolean {
     return (Object.keys(rules) as Array<keyof typeof rules>)
         .every(key => rules[key]);
 }
+
+export function getImagePath(imageUrl: string) {
+    const cloudinaryBaseUrl = 'https://res.cloudinary.com/';
+    if (imageUrl.startsWith(cloudinaryBaseUrl)) {
+        return imageUrl;
+    }else {
+        return `${process.env.API_URL}/img/${imageUrl}`;
+    }
+}
