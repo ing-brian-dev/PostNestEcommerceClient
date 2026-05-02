@@ -4,12 +4,15 @@ const NextConfig = {
   turbopack: {
     root: __dirname,
   },
-  images : {
-    remotePatterns : [
+  images: {
+    remotePatterns: [
       {
-        protocol : 'http',
-        hostname: process.env.DOMAIN!,
-        port: '3000'
+        protocol: 'http',
+        hostname: process.env.DOMAIN!
+      },
+      {
+        protocol: 'https',
+        hostname: 'res.cloudinary.com'
       }
     ]
   }

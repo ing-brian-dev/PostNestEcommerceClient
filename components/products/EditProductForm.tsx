@@ -35,7 +35,7 @@ export default function EditProductForm({ children }: { children: React.ReactNod
             <input
                 type="submit"
                 className="rounded bg-green-400 font-bold py-2 w-full cursor-pointer"
-                defaultValue="Guardar Cambios"
+                value="Guardar Cambios"
             />
         </form>
     )

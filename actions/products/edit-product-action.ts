@@ -1,6 +1,7 @@
 "use server"
 
 import { ErrorResponseSchema, Product, ProductFormSchema } from "@/src/schemas";
+import { revalidatePath } from "next/cache";
 
 type ActionStateType = {
     errors: string[];
@@ -12,6 +13,8 @@ export async function editProduct(id: Product['id'], prevState: ActionStateType,
     const product = ProductFormSchema.safeParse({
         name: formData.get('name'),
         price: formData.get('price'),
+        image: formData.get('image'),
+        image_public_id: formData.get('image_public_id'),
         inventory: formData.get('inventory'),
         categoryId: formData.get('categoryId'),
     });
@@ -41,6 +44,7 @@ export async function editProduct(id: Product['id'], prevState: ActionStateType,
         }
     }
 
+    revalidatePath('/admin/products');
     return {
         errors: [],
         success: 'Producto Actualizado Correctamente.'

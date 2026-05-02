@@ -1,9 +1,9 @@
 import EditProductForm from "@/components/products/EditProductForm";
 import ProductForm from "@/components/products/ProductForm";
 import Heading from "@/components/ui/Heading";
-import { ProductSchema } from "@/src/schemas";
 import Link from "next/link";
 import { notFound } from "next/navigation";
+import { ProductSchema } from "@/src/schemas";
 
 async function getProduct(id: string) {
     const url = `${process.env.API_URL}/products/${id}`;
@@ -23,7 +23,7 @@ type Params = Promise<{ id: string }>
 export default async function EditProductPage({ params }: { params: Params }) {
 
     const { id } = await params;
-    const product = await getProduct(id)
+    const product = await getProduct(id);
 
     return (
         <>
