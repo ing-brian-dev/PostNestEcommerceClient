@@ -32,7 +32,7 @@ export default function AddProductForm({ children }: { children: React.ReactNode
             <input
                 type="submit"
                 className="rounded bg-green-400 font-bold py-2 w-full cursor-pointer"
-                defaultValue="Agregar Producto"
+                value="Agregar Producto"
             />
         </form>
     )

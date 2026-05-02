@@ -22,7 +22,7 @@ export default function DeleteProductForm({ productId }: { productId: Product['i
             <input
                 type="submit"
                 className="text-red-600 hover:text-red-800 cursor-pointer"
-                defaultValue={'Eliminar'}
+                value="Eliminar"
             />
         </form>
     )

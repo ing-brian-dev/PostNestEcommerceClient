@@ -1,6 +1,7 @@
 import { CartItem } from "@/src/schemas";
 import { useStore } from "@/src/store";
 import { formatCurrency } from "@/src/utils";
+import Image from "next/image";
 
 export default function ShoppingCartItem({ item }: { item: CartItem }) {
     const updateQuantity = useStore(state => state.updateQuantity);
@@ -9,10 +10,10 @@ export default function ShoppingCartItem({ item }: { item: CartItem }) {
     return (
         <li className="flex items-center space-x-6 py-6 relative">
             <div className='h-24 w-24'>
-                <img
-                    src={`${process.env.NEXT_PUBLIC_API_URL}/img/${item.image}`}
+                <Image
+                    src={item.image || "/default.svg"}
                     alt={`Imagen de Producto ${item.name}`}
-                    loading="lazy"
+                    loading="eager"
                     width={100}
                     height={100}
                 />

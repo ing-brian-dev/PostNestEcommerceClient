@@ -1,5 +1,6 @@
 import { Transaction } from "@/src/schemas"
 import { formatCurrency } from "@/src/utils"
+import Image from "next/image"
 
 export default function TransactionSummary({ transaction }: { transaction: Transaction }) {
 
@@ -18,10 +19,13 @@ export default function TransactionSummary({ transaction }: { transaction: Trans
                         >
                             <div className='flex items-center space-x-6 '>
                                 <div className='relative w-32 h-32'>
-                                    <img
-                                        src={`${process.env.NEXT_PUBLIC_API_URL}/img/${item.product.image}`}
+                                    <Image
+                                        src={item.product.image || "/default.svg"}
                                         alt={`Imagen de Producto ${item.product.name}`}
                                         className="absolute"
+                                        width={100}
+                                        height={100}
+                                        loading="eager"
                                     />
                                 </div>
                                 <div className="flex-auto space-y-1 ">
